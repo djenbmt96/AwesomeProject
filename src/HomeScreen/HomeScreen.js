@@ -58,7 +58,7 @@ class HomeScreen extends React.Component {
                 <Text>{this.props.count} Likes</Text>
               </Left>
               <Right>
-                <Button transparent iconRight dark>
+                <Button transparent disabled iconRight dark>
                   <Text note>9h ago</Text>
                   <Icon name="clock"/>
                 </Button>

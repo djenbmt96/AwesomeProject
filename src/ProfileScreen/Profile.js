@@ -1,8 +1,8 @@
 import React from "react";
-import { AppRegistry, Alert } from "react-native";
+import { AppRegistry, Alert,Image } from "react-native";
 
 import {
-  Text,
+  Text, Row, Col, Grid,ListItem,Radio,
   Container,
   Card,
   CardItem,
@@ -19,7 +19,6 @@ import {
 
 import { StackNavigator } from "react-navigation";
 import EditScreenOne from "./EditScreenOne.js";
-import EditScreenTwo from "./EditScreenTwo.js";
 
 export default class Profile extends React.Component {
   componentDidMount() {
@@ -31,23 +30,75 @@ export default class Profile extends React.Component {
     return (
       <Container>
         <Content padder>
-          <Card>
-            <CardItem>
-              <Icon active name="paper-plane" />
-              <Text>Show User profiles here</Text>
-              <Right>
-                <Icon name="close" />
-              </Right>
-            </CardItem>
-          </Card>
+        <Grid>
+          <Row style={{height:50,margin:10}}>
+            <Col style={{width: '30%'}}>
+              <Text style={{textAlign:'right'}}>Name: </Text>
+            </Col>
+            <Col>
+              <Text>Nguyễn Tuấn Điền</Text>
+            </Col>
+          </Row>
+          <Row style={{height:50,margin:10}}>
+            <Col style={{width: '30%'}}>
+              <Text style={{textAlign:'right'}}>Email: </Text>
+            </Col>
+            <Col>
+              <Text>diennt@imt-soft.com</Text>
+            </Col>
+          </Row>
+          <Row style={{height:50,margin:10}}>
+            <Col style={{width: '30%'}}>
+              <Text style={{textAlign:'right'}}>Date: </Text>
+            </Col>
+            <Col>
+              <Text>20/03/2018</Text>
+            </Col>
+          </Row>
+          <Row style={{height:50,margin:10}}>
+            <Col style={{width: '30%'}}>
+              <Text style={{textAlign:'right'}}>Gender: </Text>
+            </Col>
+            <Col style={{width: '35%'}}>
+              <Row>
+                <Radio selected={true} />
+                <Text>Male</Text>
+                </Row>
+            </Col>
+            <Col style={{width: '35%'}}>
+              <Row>
+                <Radio selected={false} />
+                <Text>Female</Text>
+                </Row>
+            </Col>
+          </Row>
+          <Row style={{height:'auto',margin:10}}>
+            <Col style={{width: '30%'}}>
+              <Text style={{textAlign:'right'}}>Picture: </Text>
+            </Col>
+            <Col>
+              <Image
+              square
+              style={{
+                height: 100,
+                width: 100
+              }}
+              source={
+                require('../Images/avatar.png')
+              }
+              />
+            </Col>
+          </Row>
+        </Grid>
           <Button
             full
             rounded
-            primary
+            success
             style={{ marginTop: 10 }}
             onPress={() => this.props.navigation.navigate("EditScreenOne")}
           >
-            <Text>Goto EditScreen One</Text>
+            <Text>Edit Profile</Text>
+            <Icon name="create"/>
           </Button>
         </Content>
       </Container>

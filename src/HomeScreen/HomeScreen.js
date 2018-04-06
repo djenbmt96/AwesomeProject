@@ -14,20 +14,13 @@ import {
   Icon,
   Right
 } from "native-base";
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import { increment, decrement } from '../actions/index.js';
 
-export default class HomeScreen extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {like: 0};
-  }
-  _likeUp(){
-    Alert.alert('You liked!');
-  };
-  _likeDown(){
-    Alert.alert('You dislike!');
-  }
+class HomeScreen extends React.Component {
   render() {
-    let likes =this.state.like;
+    console.log(this.props.count);
     return (
       <Container>
         <Header>
@@ -61,8 +54,8 @@ export default class HomeScreen extends React.Component {
             </CardItem>
             <CardItem>
               <Left>
-                <Icon active name="thumbs-up" />
-                <Text>{likes} Likes</Text>
+                <Icon active name="rose" />
+                <Text>{this.props.count} Likes</Text>
               </Left>
               <Right>
                 <Button transparent iconRight dark>
@@ -77,9 +70,9 @@ export default class HomeScreen extends React.Component {
             rounded
             primary
             style={{ marginTop: 10 }}
-            onPress={this._likeUp}
+            onPress={() => this.props.increment()}
           >
-            <Icon name='rose'/>
+            <Icon name='thumbs-up'/>
             <Text>Press here to like</Text>
           </Button>
           <Button iconLeft
@@ -87,7 +80,7 @@ export default class HomeScreen extends React.Component {
             rounded
             primary
             style={{ marginTop: 10 }}
-            onPress={this._likeDown}
+            onPress={() => this.props.decrement()}
           >
             <Icon name='thumbs-down'/>
             <Text>Press here to dislike</Text>
@@ -97,3 +90,14 @@ export default class HomeScreen extends React.Component {
     );
   }
 }
+
+function mapStateToProps(state){
+  return{
+    count : state.count
+  };
+}
+function matchDispatchToProps(dispatch){
+  return bindActionCreators({increment: increment, decrement: decrement}, dispatch)
+}
+
+export default connect(mapStateToProps, matchDispatchToProps)(HomeScreen);

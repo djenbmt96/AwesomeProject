@@ -8,3 +8,8 @@ export function decrement(){
     type: "Decrement"
   };
 }
+export function edit(){
+  return{
+    type: "Edit"
+  };
+}

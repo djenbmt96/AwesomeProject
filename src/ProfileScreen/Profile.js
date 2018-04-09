@@ -19,8 +19,10 @@ import {
 
 import { StackNavigator } from "react-navigation";
 import EditScreenOne from "./EditScreenOne.js";
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 
-export default class Profile extends React.Component {
+class Profile extends React.Component {
   componentDidMount() {
     if (this.props.navigation.state.params !== undefined) {
       Alert.alert("USER found", this.props.navigation.state.params.name);
@@ -36,7 +38,7 @@ export default class Profile extends React.Component {
               <Text style={{textAlign:'right'}}>Name: </Text>
             </Col>
             <Col>
-              <Text>Nguyễn Tuấn Điền</Text>
+              <Text>{this.props.form.name}</Text>
             </Col>
           </Row>
           <Row style={{height:50,margin:10}}>
@@ -44,7 +46,7 @@ export default class Profile extends React.Component {
               <Text style={{textAlign:'right'}}>Email: </Text>
             </Col>
             <Col>
-              <Text>diennt@imt-soft.com</Text>
+              <Text>EMAIL</Text>
             </Col>
           </Row>
           <Row style={{height:50,margin:10}}>
@@ -122,3 +124,9 @@ Profile.navigationOptions = ({ navigation }) => {
     )
   };
 };
+function mapStateToProps(state){
+  return{
+    form : state.form
+  };
+}
+export default connect(mapStateToProps)(Profile);

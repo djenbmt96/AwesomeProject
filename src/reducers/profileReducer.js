@@ -1,12 +1,15 @@
-let form = { name: "Nguyễn Tuấn Điền", email: "djenbmt96@gmail.com", text: '' };
-export default function (state=form, action) {
+const profileData = { name: "Nguyễn Tuấn Điền", email: "djenbmt96@gmail.com" };
+;
+const profileReducers = (state = profileData, action) => {
     switch (action.type) {
         case "Edit":
             return {
-                name: action.name,
-                email: action.email
+                name: action.profile.name,
+                email: action.profile.email,
             }
 
+        default:
+            return state
     }
-    return state;
 }
+export default profileReducers

@@ -1,8 +1,8 @@
 import React from "react";
-import { AppRegistry, Alert,Image } from "react-native";
+import { AppRegistry, Alert, Image } from "react-native";
 
 import {
-  Text, Row, Col, Grid,ListItem,Radio,
+  Text, Row, Col, Grid, ListItem, Radio,
   Container,
   Card,
   CardItem,
@@ -18,9 +18,8 @@ import {
 } from "native-base";
 
 import { StackNavigator } from "react-navigation";
-import EditScreenOne from "./EditScreenOne.js";
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 class Profile extends React.Component {
   componentDidMount() {
@@ -29,69 +28,70 @@ class Profile extends React.Component {
     }
   }
   render() {
+    let profileReducers = this.props.profileReducers;
     return (
       <Container>
         <Content padder>
-        <Grid>
-          <Row style={{height:50,margin:10}}>
-            <Col style={{width: '30%'}}>
-              <Text style={{textAlign:'right'}}>Name: </Text>
-            </Col>
-            <Col>
-              <Text>{this.props.form.name}</Text>
-            </Col>
-          </Row>
-          <Row style={{height:50,margin:10}}>
-            <Col style={{width: '30%'}}>
-              <Text style={{textAlign:'right'}}>Email: </Text>
-            </Col>
-            <Col>
-              <Text>EMAIL</Text>
-            </Col>
-          </Row>
-          <Row style={{height:50,margin:10}}>
-            <Col style={{width: '30%'}}>
-              <Text style={{textAlign:'right'}}>Date: </Text>
-            </Col>
-            <Col>
-              <Text>20/03/2018</Text>
-            </Col>
-          </Row>
-          <Row style={{height:50,margin:10}}>
-            <Col style={{width: '30%'}}>
-              <Text style={{textAlign:'right'}}>Gender: </Text>
-            </Col>
-            <Col style={{width: '35%'}}>
-              <Row>
-                <Radio selected={true} />
-                <Text>Male</Text>
+          <Grid>
+            <Row style={{ height: 50, margin: 10 }}>
+              <Col style={{ width: '30%' }}>
+                <Text style={{ textAlign: 'right' }}>Name: </Text>
+              </Col>
+              <Col>
+                <Text>{profileReducers.name}</Text>
+              </Col>
+            </Row>
+            <Row style={{ height: 50, margin: 10 }}>
+              <Col style={{ width: '30%' }}>
+                <Text style={{ textAlign: 'right' }}>Email: </Text>
+              </Col>
+              <Col>
+                <Text>{profileReducers.email}</Text>
+              </Col>
+            </Row>
+            <Row style={{ height: 50, margin: 10 }}>
+              <Col style={{ width: '30%' }}>
+                <Text style={{ textAlign: 'right' }}>Date: </Text>
+              </Col>
+              <Col>
+                <Text>20/03/2018</Text>
+              </Col>
+            </Row>
+            <Row style={{ height: 50, margin: 10 }}>
+              <Col style={{ width: '30%' }}>
+                <Text style={{ textAlign: 'right' }}>Gender: </Text>
+              </Col>
+              <Col style={{ width: '35%' }}>
+                <Row>
+                  <Radio selected={true} />
+                  <Text>Male</Text>
                 </Row>
-            </Col>
-            <Col style={{width: '35%'}}>
-              <Row>
-                <Radio selected={false} />
-                <Text>Female</Text>
+              </Col>
+              <Col style={{ width: '35%' }}>
+                <Row>
+                  <Radio selected={false} />
+                  <Text>Female</Text>
                 </Row>
-            </Col>
-          </Row>
-          <Row style={{height:'auto',margin:10}}>
-            <Col style={{width: '30%'}}>
-              <Text style={{textAlign:'right'}}>Picture: </Text>
-            </Col>
-            <Col>
-              <Image
-              square
-              style={{
-                height: 100,
-                width: 100
-              }}
-              source={
-                require('../Images/avatar.png')
-              }
-              />
-            </Col>
-          </Row>
-        </Grid>
+              </Col>
+            </Row>
+            <Row style={{ height: 'auto', margin: 10 }}>
+              <Col style={{ width: '30%' }}>
+                <Text style={{ textAlign: 'right' }}>Picture: </Text>
+              </Col>
+              <Col>
+                <Image
+                  square
+                  style={{
+                    height: 100,
+                    width: 100
+                  }}
+                  source={
+                    require('../Images/avatar.png')
+                  }
+                />
+              </Col>
+            </Row>
+          </Grid>
           <Button
             full
             rounded
@@ -100,7 +100,7 @@ class Profile extends React.Component {
             onPress={() => this.props.navigation.navigate("EditScreenOne")}
           >
             <Text>Edit Profile</Text>
-            <Icon name="create"/>
+            <Icon name="create" />
           </Button>
         </Content>
       </Container>
@@ -124,9 +124,9 @@ Profile.navigationOptions = ({ navigation }) => {
     )
   };
 };
-function mapStateToProps(state){
-  return{
-    form : state.form
+function mapStateToProps(state) {
+  return {
+    profileReducers: state.profileReducers
   };
 }
 export default connect(mapStateToProps)(Profile);

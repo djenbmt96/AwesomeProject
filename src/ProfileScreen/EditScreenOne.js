@@ -2,7 +2,7 @@ import React from "react";
 import { AppRegistry, Alert, DatePickerAndroid, TextInput } from "react-native";
 import MyDatePicker from '../DatePicker.js';
 import {
-  Text, Form, Item, Label, Input, Radio, Col, Row,
+  Text, Form, Item, Label, Input, Radio, Col, Row, Toast,
   Container,
   Card,
   CardItem,
@@ -20,34 +20,13 @@ import { edit } from '../actions/index.js';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-const validate = values => {
-  const error = {};
-  error.email = '';
-  error.name = '';
-  var ema = values.email;
-  var nm = values.name;
-  if (values.email === undefined) {
-    ema = '';
-  }
-  if (values.name === undefined) {
-    nm = '';
-  }
-  if (ema.length < 8 && ema !== '') {
-    error.email = 'too short';
-  }
-  if (!ema.includes('@') && ema !== '') {
-    error.email = '@ not included';
-  }
-  if (nm.length > 8) {
-    error.name = 'max 8 characters';
-  }
-  return error;
-};
-
 class EditScreenOne extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { name: '' };
+    this.state = {
+      profile: { name: this.props.profileReducers.name, email: this.props.profileReducers.email },
+      emailValid:true
+    };
   };
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -64,24 +43,23 @@ class EditScreenOne extends React.Component {
       </Header>
     )
   });
-
-  renderInput({ input, label, type, meta: { touched, error, warning } }) {
-    var hasError = false;
-    if (error !== undefined) {
-      hasError = true;
+  validate(text, type) {
+    alph = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/
+    switch (type) {
+      case 'email': {
+        if (alph.test(text)) {
+          this.setState({emailValid:true})
+        } else {
+          this.setState({emailValid:false})
+        }
+        break;
+      }
     }
-    return (
-      <Item error={hasError}>
-        <Input {...input} />
-        {hasError ? <Text style={{ color: 'red' }}>{error}</Text> : <Text />}
-      </Item>
-    )
   }
 
   render() {
     const { handleSubmit, reset } = this.props;
-    console.log('state.name:' + this.state.name);
-    console.log('name:' + this.props.form.name);
+    console.log('Date: ' + this.props.date);
     return (
       <Container>
         <Content padder>
@@ -91,19 +69,24 @@ class EditScreenOne extends React.Component {
                 <Label>Name:</Label>
               </Col>
               <Col>
-                {/* <Input onChangeText={this.props.Edit}/> */}
-                <Input ref={(el) => { this.name = el; }}
-                  onChangeText={(name) => this.setState({ name })}
-                  value={this.state.name} />
+                <Input 
+                ref={(el) => { this.name = el; }}
+                  onChangeText={(name) => {
+                    this.setState({ profile: { ...this.state.profile, name: name } });
+                  }}
+                  value={this.state.profile.name} />
               </Col>
 
             </Item>
-            <Item fixedLabel>
+            <Item fixedLabel error={!this.state.emailValid}>
               <Col style={{ width: '30%', top: 15 }}>
-                <Label>Email:</Label>
+                <Label>Email:{this.props.profileReducer}</Label>
               </Col>
               <Col>
-                <Input onSubmitEditing={this.props.Input}/>
+                <Input ref={(el) => { this.email = el; }}
+                  onChangeText={(email) => {this.setState({ profile: { ...this.state.profile, email: email } });
+                  this.validate(email, 'email');}}
+                  value={this.state.profile.email} />
               </Col>
             </Item>
             <Item fixedLabel last>
@@ -131,11 +114,15 @@ class EditScreenOne extends React.Component {
             </Item>
           </Form>
           <Button
+            disabled={!this.state.emailValid}
             full
             rounded
-            info
+            info={this.state.emailValid}
             style={{ marginTop: 10 }}
-            onPress={this.props.Edit}
+            onPress={() => {
+              this.props.edit(this.state.profile);
+              this.props.navigation.navigate("Profile");
+            }}
           >
             <Icon name="checkmark" />
             <Text>Save</Text>
@@ -145,13 +132,15 @@ class EditScreenOne extends React.Component {
     );
   }
 }
-function mapStateToProps(state){
-  return{
-    form : state.form
+const mapStateToProps = (state) => {
+  return {
+    profileReducers: state.profileReducers
   };
 }
-const matchDispatchToProps = (dispatch) => ({
-  Edit: text => dispatch({ type: 'Edit', name: text }),
-  Input: event => dispatch({ type: 'Edit', name: event.nativeEvent.text })
-})
+
+const matchDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    edit,
+  }, dispatch);
+}
 export default connect(mapStateToProps, matchDispatchToProps)(EditScreenOne);

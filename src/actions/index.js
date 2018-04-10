@@ -1,15 +1,16 @@
-export function increment(){
-  return{
+export function increment() {
+  return {
     type: "Increment"
   };
 }
-export function decrement(){
-  return{
+export function decrement() {
+  return {
     type: "Decrement"
   };
 }
-export function edit(){
-  return{
-    type: "Edit"
+export const edit = (profile) => {
+  return {
+    type: "Edit",
+    profile:profile,
   };
 }

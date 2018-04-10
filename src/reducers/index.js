@@ -1,8 +1,8 @@
 import {combineReducers} from 'redux';
 import countReducer from './countReducer.js';
-import profileReducer from './profileReducer.js';
+import profileReducers from './profileReducer.js';
 const allReducers= combineReducers({
   count: countReducer,
-  form: profileReducer,
+  profileReducers,
 });
 export default allReducers;

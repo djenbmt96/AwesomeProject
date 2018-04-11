@@ -1,6 +1,5 @@
 import React from "react";
-import { AppRegistry, Alert, DatePickerAndroid, TextInput } from "react-native";
-import MyDatePicker from '../DatePicker.js';
+import { AppRegistry, Alert, DatePickerAndroid, TextInput, Image } from "react-native";
 import {
   Text, Form, Item, Label, Input, Radio, Col, Row, Toast,
   Container,
@@ -19,14 +18,29 @@ import {
 import { edit } from '../actions/index.js';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import DatePicker from 'react-native-datepicker';
+import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+import ImagePicker from 'react-native-image-picker';
+
+var radio_props = [
+  { label: 'Male', value: 0 },
+  { label: 'Female', value: 1 }
+];
 
 class EditScreenOne extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      profile: { name: this.props.profileReducers.name, email: this.props.profileReducers.email },
-      emailValid:true
+      profile: {
+        name: this.props.profileReducers.name,
+        email: this.props.profileReducers.email,
+        date: this.props.profileReducers.date,
+        gender: this.props.profileReducers.gender
+      },
+      avatarSource: '',
+      emailValid: true
     };
+    this.upload = this.upload.bind(this);
   };
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -48,18 +62,45 @@ class EditScreenOne extends React.Component {
     switch (type) {
       case 'email': {
         if (alph.test(text)) {
-          this.setState({emailValid:true})
+          this.setState({ emailValid: true })
         } else {
-          this.setState({emailValid:false})
+          this.setState({ emailValid: false })
         }
         break;
       }
     }
   }
+  upload() {
+    var options = {
+      title: 'Select Avatar',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images'
+      }
+    };
+    ImagePicker.showImagePicker(options, (response) => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      else {
+        let source = { uri: response.uri };
+        // You can also display the image using data:
+        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+        this.setState({
+          avatarSource: source
+        });
+
+      }
+    });
+  }
 
   render() {
     const { handleSubmit, reset } = this.props;
-    console.log('Date: ' + this.props.date);
     return (
       <Container>
         <Content padder>
@@ -69,8 +110,8 @@ class EditScreenOne extends React.Component {
                 <Label>Name:</Label>
               </Col>
               <Col>
-                <Input 
-                ref={(el) => { this.name = el; }}
+                <Input
+                  ref={(el) => { this.name = el; }}
                   onChangeText={(name) => {
                     this.setState({ profile: { ...this.state.profile, name: name } });
                   }}
@@ -84,33 +125,81 @@ class EditScreenOne extends React.Component {
               </Col>
               <Col>
                 <Input ref={(el) => { this.email = el; }}
-                  onChangeText={(email) => {this.setState({ profile: { ...this.state.profile, email: email } });
-                  this.validate(email, 'email');}}
+                  onChangeText={(email) => {
+                    this.setState({ profile: { ...this.state.profile, email: email } });
+                    this.validate(email, 'email');
+                  }}
                   value={this.state.profile.email} />
               </Col>
             </Item>
             <Item fixedLabel last>
               <Label>Date:</Label>
-              <MyDatePicker />
+              <DatePicker
+                style={{ width: 200 }}
+                date={this.state.profile.date}
+                mode="date"
+                androidMode="spinner"
+                placeholder="select date"
+                format="YYYY-MM-DD"
+                minDate="1900-01-01"
+                maxDate="2020-01-01"
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                  dateIcon: {
+                    position: 'absolute',
+                    left: 0,
+                    top: 4,
+                    marginLeft: 0
+                  },
+                  dateInput: {
+                    marginLeft: 36
+                  }
+                }}
+                onDateChange={(date) => { this.setState({ profile: { ...this.state.profile, date: date } }) }}
+              />
             </Item>
             <Item fixedLabel last style={{ height: 50 }}>
-              <Label>Gender</Label>
-              <Col style={{ width: '35%' }}>
-                <Row style={{ top: 15 }}>
-                  <Radio selected={true} />
-                  <Text>Male</Text>
-                </Row>
+              <Col style={{ width: '30%', top: 15 }}>
+                <Label>Gender</Label>
               </Col>
-              <Col style={{ width: '35%' }}>
-                <Row style={{ top: 15 }}>
-                  <Radio selected={false} />
-                  <Text>Female</Text>
-                </Row>
+              <Col>
+                <RadioForm
+                  radio_props={radio_props}
+                  initial={this.state.profile.gender}
+                  formHorizontal={true}
+                  labelHorizontal={true}
+                  buttonColor={'#2196f3'}
+                  animation={true}
+                  onPress={(value) => { this.setState({ profile: { ...this.state.profile, gender: value } }) }}
+                />
               </Col>
+
             </Item>
             <Item fixedLabel last>
-              <Label>Picture</Label>
-              <Input />
+              <Col style={{ width: '30%', top: 15 }}>
+                <Label>Picture</Label>
+              </Col>
+              <Col>
+                <Button block light onPress={this.upload}>
+                  <Text>Upload</Text>
+                </Button>
+              </Col>
+            </Item>
+            <Item>
+              <Col style={{ width: '30%' }}>
+                <Label></Label>
+              </Col>
+              <Col>
+                <Image
+                  square
+                  style={{
+                    height: 100,
+                    width: 100
+                  }}
+                  source={this.state.avatarSource}
+                />
+              </Col>
             </Item>
           </Form>
           <Button

@@ -54,7 +54,7 @@ class Profile extends React.Component {
                 <Text style={{ textAlign: 'right' }}>Date: </Text>
               </Col>
               <Col>
-                <Text>20/03/2018</Text>
+                <Text>{profileReducers.date}</Text>
               </Col>
             </Row>
             <Row style={{ height: 50, margin: 10 }}>
@@ -63,13 +63,13 @@ class Profile extends React.Component {
               </Col>
               <Col style={{ width: '35%' }}>
                 <Row>
-                  <Radio selected={true} />
+                  <Radio selected={profileReducers.gender===0} />
                   <Text>Male</Text>
                 </Row>
               </Col>
               <Col style={{ width: '35%' }}>
                 <Row>
-                  <Radio selected={false} />
+                  <Radio selected={profileReducers.gender===1} />
                   <Text>Female</Text>
                 </Row>
               </Col>

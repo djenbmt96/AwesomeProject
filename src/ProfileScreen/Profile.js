@@ -1,8 +1,8 @@
 import React from "react";
-import { AppRegistry, Alert } from "react-native";
+import { AppRegistry, Alert, Image } from "react-native";
 
 import {
-  Text,
+  Text, Row, Col, Grid, ListItem, Radio,
   Container,
   Card,
   CardItem,
@@ -18,36 +18,89 @@ import {
 } from "native-base";
 
 import { StackNavigator } from "react-navigation";
-import EditScreenOne from "./EditScreenOne.js";
-import EditScreenTwo from "./EditScreenTwo.js";
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-export default class Profile extends React.Component {
+class Profile extends React.Component {
   componentDidMount() {
     if (this.props.navigation.state.params !== undefined) {
       Alert.alert("USER found", this.props.navigation.state.params.name);
     }
   }
   render() {
+    let profileReducers = this.props.profileReducers;
     return (
       <Container>
         <Content padder>
-          <Card>
-            <CardItem>
-              <Icon active name="paper-plane" />
-              <Text>Show User profiles here</Text>
-              <Right>
-                <Icon name="close" />
-              </Right>
-            </CardItem>
-          </Card>
+          <Grid>
+            <Row style={{ height: 50, margin: 10 }}>
+              <Col style={{ width: '30%' }}>
+                <Text style={{ textAlign: 'right' }}>Name: </Text>
+              </Col>
+              <Col>
+                <Text>{profileReducers.name}</Text>
+              </Col>
+            </Row>
+            <Row style={{ height: 50, margin: 10 }}>
+              <Col style={{ width: '30%' }}>
+                <Text style={{ textAlign: 'right' }}>Email: </Text>
+              </Col>
+              <Col>
+                <Text>{profileReducers.email}</Text>
+              </Col>
+            </Row>
+            <Row style={{ height: 50, margin: 10 }}>
+              <Col style={{ width: '30%' }}>
+                <Text style={{ textAlign: 'right' }}>Date: </Text>
+              </Col>
+              <Col>
+                <Text>{profileReducers.date}</Text>
+              </Col>
+            </Row>
+            <Row style={{ height: 50, margin: 10 }}>
+              <Col style={{ width: '30%' }}>
+                <Text style={{ textAlign: 'right' }}>Gender: </Text>
+              </Col>
+              <Col style={{ width: '35%' }}>
+                <Row>
+                  <Radio selected={profileReducers.gender===0} />
+                  <Text>Male</Text>
+                </Row>
+              </Col>
+              <Col style={{ width: '35%' }}>
+                <Row>
+                  <Radio selected={profileReducers.gender===1} />
+                  <Text>Female</Text>
+                </Row>
+              </Col>
+            </Row>
+            <Row style={{ height: 'auto', margin: 10 }}>
+              <Col style={{ width: '30%' }}>
+                <Text style={{ textAlign: 'right' }}>Picture: </Text>
+              </Col>
+              <Col>
+                <Image
+                  square
+                  style={{
+                    height: 100,
+                    width: 100
+                  }}
+                  source={ this.props.profileReducers.picture ==='' ?
+                    require('../Images/avatar.png') : {uri:this.props.profileReducers.picture}
+                  }
+                />
+              </Col>
+            </Row>
+          </Grid>
           <Button
             full
             rounded
-            primary
+            success
             style={{ marginTop: 10 }}
             onPress={() => this.props.navigation.navigate("EditScreenOne")}
           >
-            <Text>Goto EditScreen One</Text>
+            <Text>Edit Profile</Text>
+            <Icon name="create" />
           </Button>
         </Content>
       </Container>
@@ -71,3 +124,9 @@ Profile.navigationOptions = ({ navigation }) => {
     )
   };
 };
+function mapStateToProps(state) {
+  return {
+    profileReducers: state.profileReducers
+  };
+}
+export default connect(mapStateToProps)(Profile);

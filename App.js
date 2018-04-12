@@ -6,6 +6,7 @@ import HomeScreen from "./src/HomeScreen/index.js";
 import allReducers from './src/reducers/index.js';
 import {createStore} from 'redux';
 import {Provider} from 'react-redux';
+import { Field, reduxForm } from 'redux-form';
 
 const store = createStore(allReducers);
 export default class AwesomeApp extends Component {

@@ -85,8 +85,8 @@ class Profile extends React.Component {
                     height: 100,
                     width: 100
                   }}
-                  source={
-                    require('../Images/avatar.png')
+                  source={ this.props.profileReducers.picture ==='' ?
+                    require('../Images/avatar.png') : {uri:this.props.profileReducers.picture}
                   }
                 />
               </Col>

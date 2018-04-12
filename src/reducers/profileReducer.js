@@ -1,4 +1,4 @@
-const profileData = { name: "Nguyễn Tuấn Điền", email: "djenbmt96@gmail.com", date: "1996-03-20", gender: 0 };
+const profileData = { name: "Nguyễn Tuấn Điền", email: "djenbmt96@gmail.com", date: "1996-03-20", gender: 0, picture:'' };
 ;
 const profileReducers = (state = profileData, action) => {
     switch (action.type) {
@@ -8,6 +8,7 @@ const profileReducers = (state = profileData, action) => {
                 email: action.profile.email,
                 date: action.profile.date,
                 gender: action.profile.gender,
+                picture: action.profile.picture,
             }
 
         default:

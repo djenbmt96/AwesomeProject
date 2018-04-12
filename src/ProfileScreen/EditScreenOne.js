@@ -35,7 +35,8 @@ class EditScreenOne extends React.Component {
         name: this.props.profileReducers.name,
         email: this.props.profileReducers.email,
         date: this.props.profileReducers.date,
-        gender: this.props.profileReducers.gender
+        gender: this.props.profileReducers.gender,
+        picture: this.props.profileReducers.picture
       },
       avatarSource: '',
       emailValid: true
@@ -92,9 +93,8 @@ class EditScreenOne extends React.Component {
         // You can also display the image using data:
         // let source = { uri: 'data:image/jpeg;base64,' + response.data };
         this.setState({
-          avatarSource: source
+          profile:{...this.state.profile, picture: source.uri}
         });
-
       }
     });
   }
@@ -197,7 +197,8 @@ class EditScreenOne extends React.Component {
                     height: 100,
                     width: 100
                   }}
-                  source={this.state.avatarSource}
+                  source={this.state.profile.picture ==='' ?
+                  require('../Images/avatar.png') : {uri:this.state.profile.picture}}
                 />
               </Col>
             </Item>

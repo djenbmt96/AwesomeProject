@@ -211,7 +211,7 @@ class EditScreenOne extends React.Component {
             style={{ marginTop: 10 }}
             onPress={() => {
               this.props.edit(this.state.profile);
-              this.props.navigation.navigate("Profile");
+              this.props.navigation.goBack();
             }}
           >
             <Icon name="checkmark" />

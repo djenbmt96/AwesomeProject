@@ -9,7 +9,7 @@ import {
   Content,
   Icon,Left
 } from "native-base";
-const routes = [{name:"Home",icon:"home"}, {name:"Profile", icon:"person"}];
+const routes = [{name:"Home",icon:"home"}, {name:"Profile", icon:"person"},{name:"Modal", icon:"color-wand"}];
 export default class SideBar extends React.Component {
   render() {
     return (

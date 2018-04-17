@@ -14,3 +14,9 @@ export const edit = (profile) => {
     profile:profile,
   };
 }
+export const addComment=(comment) => {
+  return {
+    type: "addComment",
+    comment: comment,
+  };
+}

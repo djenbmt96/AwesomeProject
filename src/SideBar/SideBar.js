@@ -7,9 +7,14 @@ import {
   List,
   ListItem,
   Content,
-  Icon,Left
+  Icon, Left
 } from "native-base";
-const routes = [{name:"Home",icon:"home"}, {name:"Profile", icon:"person"}];
+const routes = [
+  { name: "Home", icon: "home" },
+  { name: "Profile", icon: "person" },
+  { name: "Modal", icon: "color-wand" },
+  { name: "People", icon : "people"}
+];
 export default class SideBar extends React.Component {
   render() {
     return (
@@ -50,7 +55,7 @@ export default class SideBar extends React.Component {
                   onPress={() => this.props.navigation.navigate(data.name)}
                 >
                   <Left>
-                    <Icon name={data.icon}/>
+                    <Icon name={data.icon} />
                     <Text>{data.name}</Text>
                   </Left>
                 </ListItem>

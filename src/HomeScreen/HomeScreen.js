@@ -1,7 +1,7 @@
 import React from "react";
-import { StatusBar,Image,Alert } from "react-native";
+import { StatusBar, Image, Alert, TextInput,Keyboard } from "react-native";
 import {
-  Button,
+  Button, Thumbnail, List, ListItem,
   Text,
   Container,
   Card,
@@ -14,13 +14,84 @@ import {
   Icon,
   Right
 } from "native-base";
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import { increment, decrement } from '../actions/index.js';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { increment, decrement, addComment } from '../actions/index.js';
+import styles from '../styles/custom.js';
 
 class HomeScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      visibleTextInput: false,
+      comment: {idUser:'1',comment:'',time:''}
+    }
+    this.save=this.save.bind(this);
+  }
+  setVisible() {
+    this.setState({ visibleTextInput: !this.state.visibleTextInput })
+  }
+  _renderTextInput = () => (
+    <CardItem bordered style={{ height: 50, paddingBottom: 0 }}>
+      <TextInput style={{ width: '85%' }}
+      value={this.state.comment.comment}
+        onChangeText={(text) => {
+          this.setState({ comment:{...this.state.comment, comment:text,time:this.GetTime()} });
+        }}>
+      </TextInput>
+      <Right style={{ width: 50 }}>
+        <Button
+          transparent
+          style={{ height: 40, width: 40 }}
+          onPress={this.save}>
+          <Icon style={{ marginLeft: 12 }} name='paper-plane' />
+        </Button>
+      </Right>
+    </CardItem>
+  )
+  GetTime() {
+    var date, TimeType, hour, minutes, fullTime;
+    date = new Date();
+    hour = date.getHours(); 
+    if(hour <= 11)
+    {
+ 
+      TimeType = 'am';
+ 
+    }
+    else{
+      TimeType = 'pm';
+    }
+    if( hour > 12 )
+    {
+      hour = hour - 12;
+    }
+    if( hour == 0 )
+    {
+        hour = 12;
+    } 
+    minutes = date.getMinutes();
+    if(minutes < 10)
+    {
+      minutes = '0' + minutes.toString();
+    }
+    fullTime = hour.toString() + ':' + minutes.toString() + ' ' + TimeType.toString();
+    return fullTime;
+  }
+  save(){
+    if(this.state.comment.comment!='') 
+    {
+      this.props.addComment(this.state.comment);
+      this.setState({comment:{...this.state.comment,comment:''}});
+      Keyboard.dismiss();
+    }
+  }
+
   render() {
-    console.log(this.props.count);
+    // console.log('comments:' + this.props.comments);
+    // console.log('id:' + this.state.comment.idUser);
+    // console.log('comment:' + this.state.comment.comment);
+    // console.log('time:' + this.state.comment.time);
     return (
       <Container>
         <Header>
@@ -50,54 +121,68 @@ class HomeScreen extends React.Component {
             </CardItem>
             <CardItem cardBody>
               <Image source={require('../Images/countryside.jpg')}
-                style={{height:200,width:'100%'}}/>
+                style={{ height: 200, width: '100%' }} />
             </CardItem>
-            <CardItem>
+            <CardItem bordered style={{ height: 50 }}>
               <Left>
-                <Icon active name="rose" />
-                <Text>{this.props.count} Likes</Text>
+                <Button dark transparent iconLeft
+                  onPress={() => this.props.increment()}>
+                  <Icon active name="rose" />
+                  <Text>{this.props.count} Likes</Text>
+                </Button>
               </Left>
               <Right>
-                <Button transparent disabled iconRight dark>
-                  <Text note>9h ago</Text>
-                  <Icon name="clock"/>
+                <Button transparent dark iconLeft
+                  onPress={() => this.setVisible()}>
+                  <Icon name="chatbubbles" />
+                  <Text>Comments</Text>
                 </Button>
               </Right>
             </CardItem>
+            {this.state.visibleTextInput ? this._renderTextInput() : null}
+            <CardItem bordered style={{ paddingLeft: 0 }}>
+              <Container style={{ height: "100%" }}>
+                <List dataArray={this.props.comments}
+                  renderRow={
+                    (comment) => {
+                      return (
+                        <ListItem avatar style={styles.listitem}>
+                          <Left >
+                            <Thumbnail source={this.props.profileReducers.picture === '' ?
+                              require('../Images/avatar.png') : { uri: this.props.profileReducers.picture }} />
+                          </Left>
+                          <Body style={styles.itembody}>
+                            <Text>{this.props.profileReducers.name}</Text>
+                            <Text note>{comment.comment}</Text>
+                          </Body>
+                          <Right style={{ paddingRight: 0, paddingTop: 0 }}>
+                            <Text note>{comment.time}</Text>
+                          </Right>
+                        </ListItem>
+                      )
+                    }
+                  }>
+
+                </List>
+              </Container>
+            </CardItem>
           </Card>
-          <Button iconLeft
-            full
-            rounded
-            primary
-            style={{ marginTop: 10 }}
-            onPress={() => this.props.increment()}
-          >
-            <Icon name='thumbs-up'/>
-            <Text>Press here to like</Text>
-          </Button>
-          <Button iconLeft
-            full
-            rounded
-            primary
-            style={{ marginTop: 10 }}
-            onPress={() => this.props.decrement()}
-          >
-            <Icon name='thumbs-down'/>
-            <Text>Press here to dislike</Text>
-          </Button>
+
         </Content>
       </Container>
     );
   }
 }
 
-function mapStateToProps(state){
-  return{
-    count : state.count
+function mapStateToProps(state) {
+  return {
+    count: state.count,
+    profileReducers: state.profileReducers,
+    comments: state.comments
   };
 }
-function matchDispatchToProps(dispatch){
-  return bindActionCreators({increment: increment, decrement: decrement}, dispatch)
+function matchDispatchToProps(dispatch) {
+  return bindActionCreators({ increment, decrement, addComment }, dispatch)
 }
 
 export default connect(mapStateToProps, matchDispatchToProps)(HomeScreen);

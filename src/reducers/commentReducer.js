@@ -1,3 +1,4 @@
+import Type from '../Enum.js';
 const commentData = [
     {
         idUser:1,
@@ -24,11 +25,8 @@ const add = (comment) => {
     commentData.push(comment);
 }
 const comments = (state = commentData, action) => {
-    console.log("STATE:",state);
-    console.log("commentData:",commentData);
-    console.log("action:" , action.comment);
     switch(action.type){
-        case 'addComment': 
+        case Type.ADDCOMMENT: 
             add(action.comment)
             return commentData
         

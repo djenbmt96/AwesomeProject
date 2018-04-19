@@ -1,22 +1,34 @@
+import Type from '../Enum.js';
 export function increment() {
   return {
-    type: "Increment"
+    type: Type.INCREAMENT
   };
 }
 export function decrement() {
   return {
-    type: "Decrement"
+    type: Type.DECREAMENT
   };
 }
 export const edit = (profile) => {
   return {
-    type: "Edit",
-    profile:profile,
+    type: Type.EDIT,
+    profile: profile,
   };
 }
-export const addComment=(comment) => {
+export const addComment = (comment) => {
   return {
-    type: "addComment",
+    type: Type.ADDCOMMENT,
     comment: comment,
   };
+}
+export const showPeople = () => {
+  return {
+    type: Type.SHOW_PEOPLE,
+  }
+}
+export const getPerson = (person) => {
+  return {
+    type: Type.GET_PERSON,
+    person: person,
+  }
 }

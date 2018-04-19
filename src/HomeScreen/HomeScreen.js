@@ -1,5 +1,5 @@
 import React from "react";
-import { StatusBar, Image, Alert, StyleSheet, TextInput } from "react-native";
+import { StatusBar, Image, Alert, TextInput,Keyboard } from "react-native";
 import {
   Button, Thumbnail, List, ListItem,
   Text,
@@ -17,13 +17,14 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { increment, decrement, addComment } from '../actions/index.js';
+import styles from '../styles/custom.js';
 
 class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       visibleTextInput: false,
-      comment: {idUser:'1',comment:'',time:'0:00 am'}
+      comment: {idUser:'1',comment:'',time:''}
     }
     this.save=this.save.bind(this);
   }
@@ -33,8 +34,9 @@ class HomeScreen extends React.Component {
   _renderTextInput = () => (
     <CardItem bordered style={{ height: 50, paddingBottom: 0 }}>
       <TextInput style={{ width: '85%' }}
+      value={this.state.comment.comment}
         onChangeText={(text) => {
-          this.setState({ comment:{...this.state.comment, comment:text} });
+          this.setState({ comment:{...this.state.comment, comment:text,time:this.GetTime()} });
         }}>
       </TextInput>
       <Right style={{ width: 50 }}>
@@ -47,11 +49,41 @@ class HomeScreen extends React.Component {
       </Right>
     </CardItem>
   )
+  GetTime() {
+    var date, TimeType, hour, minutes, fullTime;
+    date = new Date();
+    hour = date.getHours(); 
+    if(hour <= 11)
+    {
+ 
+      TimeType = 'am';
+ 
+    }
+    else{
+      TimeType = 'pm';
+    }
+    if( hour > 12 )
+    {
+      hour = hour - 12;
+    }
+    if( hour == 0 )
+    {
+        hour = 12;
+    } 
+    minutes = date.getMinutes();
+    if(minutes < 10)
+    {
+      minutes = '0' + minutes.toString();
+    }
+    fullTime = hour.toString() + ':' + minutes.toString() + ' ' + TimeType.toString();
+    return fullTime;
+  }
   save(){
     if(this.state.comment.comment!='') 
     {
       this.props.addComment(this.state.comment);
       this.setState({comment:{...this.state.comment,comment:''}});
+      Keyboard.dismiss();
     }
   }
 
@@ -110,19 +142,6 @@ class HomeScreen extends React.Component {
             {this.state.visibleTextInput ? this._renderTextInput() : null}
             <CardItem bordered style={{ paddingLeft: 0 }}>
               <Container style={{ height: "100%" }}>
-                {/* <ListItem avatar style={styles.listitem} dataSource={this.props.comments.comments}>
-                    <Left >
-                      <Thumbnail source={this.props.profileReducers.picture === '' ?
-                        require('../Images/avatar.png') : { uri: this.props.profileReducers.picture }} />
-                    </Left>
-                    <Body style={styles.itembody}>
-                      <Text>{this.props.profileReducers.name}</Text>
-                      <Text note>Your picture so beautiful :D</Text>
-                    </Body>
-                    <Right style={{ paddingRight: 0, paddingTop: 0 }}>
-                      <Text note>3:43 pm</Text>
-                    </Right>
-                  </ListItem> */}
                 <List dataArray={this.props.comments}
                   renderRow={
                     (comment) => {
@@ -167,15 +186,3 @@ function matchDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, matchDispatchToProps)(HomeScreen);
-
-const styles = StyleSheet.create(
-  {
-    listitem: {
-      marginLeft: 5
-    },
-    itembody:
-      {
-        marginLeft: 5
-      }
-  }
-)

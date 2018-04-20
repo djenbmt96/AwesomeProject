@@ -1,8 +1,9 @@
 import React from "react";
-import { AppRegistry, Alert, Image } from "react-native";
+import { AppRegistry, Alert, Image, View, ImageBackground } from "react-native";
 
 import {
-  Text, Row, Col, Grid, ListItem, Radio,
+  Root,
+  Text, Row, Col, Grid, ListItem, Radio, ActionSheet, Item, Label, Input, Form,
   Container,
   Card,
   CardItem,
@@ -20,88 +21,131 @@ import {
 import { StackNavigator } from "react-navigation";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import styles from '../styles/custom';
+import ImagePicker from 'react-native-image-picker';
+import { updateCover } from '../actions/index.js';
+
+var BUTTONS = [
+  { text: "Change your cover photo", icon: "color-palette", iconColor: "#2c8ef4" },
+  { text: "Cancel", icon: "close", iconColor: "#25de5b" }
+];
+var CANCEL_INDEX = 1;
 
 class Profile extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { isLike: false, cover: this.props.profileReducers.cover };
+    this.showActionSheet = this.showActionSheet.bind(this);
+  }
   componentDidMount() {
     if (this.props.navigation.state.params !== undefined) {
       Alert.alert("USER found", this.props.navigation.state.params.name);
     }
   }
+  showActionSheet() {
+    ActionSheet.show(
+      {
+        options: BUTTONS,
+        cancelButtonIndex: CANCEL_INDEX,
+        title: "Select one action"
+      },
+      buttonIndex => {
+        switch (buttonIndex) {
+          case 0: {
+            var options = {
+              title: 'Select Avatar',
+              storageOptions: {
+                skipBackup: true,
+                path: 'images'
+              }
+            };
+            ImagePicker.showImagePicker(options, (response) => {
+              console.log('Response = ', response);
+
+              if (response.didCancel) {
+                console.log('User cancelled image picker');
+              }
+              else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+              }
+              else {
+                let source = { uri: response.uri };
+                // You can also display the image using data:
+                // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+                this.props.updateCover(source.uri);
+              }
+            });
+            break;
+          }
+          default: break;
+        }
+      }
+    )
+  }
   render() {
     let profileReducers = this.props.profileReducers;
     return (
       <Container>
-        <Content padder>
-          <Grid>
-            <Row style={{ height: 50, margin: 10 }}>
-              <Col style={{ width: '30%' }}>
-                <Text style={{ textAlign: 'right' }}>Name: </Text>
-              </Col>
-              <Col>
-                <Text>{profileReducers.name}</Text>
-              </Col>
-            </Row>
-            <Row style={{ height: 50, margin: 10 }}>
-              <Col style={{ width: '30%' }}>
-                <Text style={{ textAlign: 'right' }}>Email: </Text>
-              </Col>
-              <Col>
-                <Text>{profileReducers.email}</Text>
-              </Col>
-            </Row>
-            <Row style={{ height: 50, margin: 10 }}>
-              <Col style={{ width: '30%' }}>
-                <Text style={{ textAlign: 'right' }}>Date: </Text>
-              </Col>
-              <Col>
-                <Text>{profileReducers.date}</Text>
-              </Col>
-            </Row>
-            <Row style={{ height: 50, margin: 10 }}>
-              <Col style={{ width: '30%' }}>
-                <Text style={{ textAlign: 'right' }}>Gender: </Text>
-              </Col>
-              <Col style={{ width: '35%' }}>
-                <Row>
-                  <Radio selected={profileReducers.gender===0} />
-                  <Text>Male</Text>
-                </Row>
-              </Col>
-              <Col style={{ width: '35%' }}>
-                <Row>
-                  <Radio selected={profileReducers.gender===1} />
-                  <Text>Female</Text>
-                </Row>
-              </Col>
-            </Row>
-            <Row style={{ height: 'auto', margin: 10 }}>
-              <Col style={{ width: '30%' }}>
-                <Text style={{ textAlign: 'right' }}>Picture: </Text>
-              </Col>
-              <Col>
-                <Image
-                  square
-                  style={{
-                    height: 100,
-                    width: 100
-                  }}
-                  source={ this.props.profileReducers.picture ==='' ?
-                    require('../Images/avatar.png') : {uri:this.props.profileReducers.picture}
-                  }
-                />
-              </Col>
-            </Row>
-          </Grid>
-          <Button
-            full
-            rounded
-            success
-            style={{ marginTop: 10 }}
-            onPress={() => this.props.navigation.navigate("EditScreenOne")}
-          >
-            <Text>Edit Profile</Text>
-            <Icon name="create" />
-          </Button>
+        <Content>
+          <View style={styles.headerContainer}>
+            <View style={styles.coverContainer}>
+              <CardItem style={styles.imageCover}>
+                <Image source={this.props.profileReducers.cover === '' ?
+                  require('../Images/background.png') : { uri: this.props.profileReducers.cover }
+                }
+                  style={styles.coverImage} />
+              </CardItem>
+            </View>
+            <View style={styles.profileImageContainer}>
+              <Image
+                source={this.props.profileReducers.picture === '' ?
+                  require('../Images/avatar.png') : { uri: this.props.profileReducers.picture }
+                }
+                style={styles.profileImage}
+              />
+            </View>
+            <View style={styles.coverMetaContainer}>
+              <Text style={styles.coverName}>{profileReducers.name}</Text>
+            </View>
+            <View style={styles.buttonProfile}>
+              <Button
+                rounded
+                light={!this.state.isLike}
+                danger={this.state.isLike}
+                onPress={() => { this.setState({ isLike: !this.state.isLike }) }}
+              >
+                <Icon name="heart" />
+              </Button>
+              <Button
+                rounded
+                success
+                onPress={() => this.props.navigation.navigate("EditScreenOne")}
+              >
+                <Icon name="create" />
+              </Button>
+              <Button
+                rounded
+                light
+                onPress={this.showActionSheet}
+              >
+                <Icon name="apps" />
+              </Button>
+            </View>
+          </View>
+          <Form>
+            <Item stackedLabel>
+              <Label>Email</Label>
+              <Text>{profileReducers.email}</Text>
+            </Item>
+            <Item stackedLabel last>
+              <Label>Date</Label>
+              <Text>{profileReducers.date}</Text>
+            </Item>
+            <Item stackedLabel last>
+              <Label>Gender</Label>
+              <Text>{profileReducers.gender==0 ? 'Male':'Female'}</Text>
+            </Item>
+          </Form>
         </Content>
       </Container>
     );
@@ -129,4 +173,9 @@ function mapStateToProps(state) {
     profileReducers: state.profileReducers
   };
 }
-export default connect(mapStateToProps)(Profile);
+const matchDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    updateCover,
+  }, dispatch);
+}
+export default connect(mapStateToProps, matchDispatchToProps)(Profile);

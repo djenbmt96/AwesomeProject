@@ -15,6 +15,12 @@ export const edit = (profile) => {
     profile: profile,
   };
 }
+export const updateCover=(cover)=>{
+  return{
+    type: Type.UPDATE_COVER_PHOTO,
+    cover:cover,
+  }
+}
 export const addComment = (comment) => {
   return {
     type: Type.ADDCOMMENT,

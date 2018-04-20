@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View } from "react-native";
-import { Container, Content, Picker, Button, Text } from "native-base";
+import { Container, Content, Picker, Button, Text,Root } from "native-base";
 import HomeScreen from "./src/HomeScreen/index.js";
 
 import allReducers from './src/reducers/index.js';
@@ -13,7 +13,9 @@ export default class AwesomeApp extends Component {
   render() {
     return (
     <Provider store= {store}>
+    <Root>
       <HomeScreen />
-    </Provider>);
+      </Root>
+    </Provider>)
   }
 }

@@ -1,5 +1,8 @@
 import React from "react";
 import { AppRegistry, Image, StatusBar } from "react-native";
+
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import {
   Button,
   Text,
@@ -13,16 +16,16 @@ const routes = [
   { name: "Home", icon: "home" },
   { name: "Profile", icon: "person" },
   { name: "Modal", icon: "color-wand" },
-  { name: "People", icon : "people"}
+  { name: "People", icon: "people" }
 ];
-export default class SideBar extends React.Component {
+class SideBar extends React.Component {
   render() {
     return (
       <Container>
         <Content>
           <Image
-            source={
-              require('../Images/background.png')
+            source={this.props.profileReducers.cover === '' ?
+              require('../Images/background.png') : { uri: this.props.profileReducers.cover }
             }
             style={{
               height: 120,
@@ -41,8 +44,8 @@ export default class SideBar extends React.Component {
               top: 20,
               borderRadius: 50
             }}
-            source={
-              require('../Images/avatar.png')
+            source={this.props.profileReducers.picture === '' ?
+              require('../Images/avatar.png') : { uri: this.props.profileReducers.picture }
             }
           />
           <List
@@ -67,3 +70,10 @@ export default class SideBar extends React.Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    profileReducers: state.profileReducers
+  };
+}
+export default connect(mapStateToProps)(SideBar);

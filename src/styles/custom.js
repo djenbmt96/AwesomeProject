@@ -45,6 +45,16 @@ export default styles = StyleSheet.create({
         borderRadius: 4,
         borderColor: "rgba(0, 0, 0, 0.1)"
     },
+    buttonCloseModal1: {
+        backgroundColor: "lightblue",
+        padding: 12,
+        margin: 16,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 4,
+        borderColor: "rgba(0, 0, 0, 0.1)"
+
+    },
 
 
     closeButton: {
@@ -157,5 +167,14 @@ export default styles = StyleSheet.create({
         bottom: 8,
         left:'30%',
         width:'60%'
+    },
+    
+    modalContent1: {
+        backgroundColor: "white",
+        padding: 22,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 4,
+        borderColor: "rgba(0, 0, 0, 0.1)"
     },
 })

@@ -5,13 +5,14 @@ import SideBar from "../SideBar/SideBar.js";
 import Modal from "../Modal/index.js";
 import People from '../GridList/index';
 import { DrawerNavigator } from "react-navigation";
+import Login from '../Login/index.js';
 
 const HomeScreenRouter = DrawerNavigator(
   {
     Home: { screen: HomeScreen },
     Modal: {screen: Modal},
     ProfileScreen: { screen: ProfileScreen },
-    People: {screen: People}
+    People: {screen: People},
   },
   {
     contentComponent: props => <SideBar {...props} />

@@ -1,5 +1,5 @@
 import React from "react";
-import { AppRegistry, Alert, DatePickerAndroid, TextInput, Image } from "react-native";
+import { AppRegistry, Alert, DatePickerAndroid, TextInput, Image,ScrollView } from "react-native";
 import {
   Text, Form, Item, Label, Input, Radio, Col, Row, Toast,
   Container,
@@ -52,7 +52,7 @@ class EditScreenOne extends React.Component {
           </Button>
         </Left>
         <Body>
-          <Title>EditScreenOne</Title>
+          <Title>Edit profile</Title>
         </Body>
         <Right />
       </Header>
@@ -100,6 +100,7 @@ class EditScreenOne extends React.Component {
   }
 
   render() {
+    console.log("name",this.state.profile.name);
     const { handleSubmit, reset } = this.props;
     return (
       <Container>
@@ -202,12 +203,11 @@ class EditScreenOne extends React.Component {
                 />
               </Col>
             </Item>
-          </Form>
           <Button
-            disabled={!this.state.emailValid}
+            disabled={!this.state.emailValid || this.state.profile.name==''}
             full
             rounded
-            info={this.state.emailValid}
+            info={this.state.emailValid && this.state.profile.name!=''}
             style={{ marginTop: 10 }}
             onPress={() => {
               this.props.edit(this.state.profile);
@@ -217,6 +217,7 @@ class EditScreenOne extends React.Component {
             <Icon name="checkmark" />
             <Text>Save</Text>
           </Button>
+          </Form>
         </Content>
       </Container>
     );

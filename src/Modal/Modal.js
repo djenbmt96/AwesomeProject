@@ -1,8 +1,16 @@
 import React, { Component } from 'react';
 import { Text, TouchableHighlight, TouchableOpacity, View, StyleSheet } from 'react-native';
 import Modal from "react-native-modal";
-import { Button, Icon, Content,StyleProvider  } from 'native-base';
+import { Button, Icon, Content, StyleProvider, List, ListItem } from 'native-base';
+import Type from '../Enum';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 class MyModal extends Component {
+  constructor(props) {
+    super(props);
+    this.getData = this.getData.bind(this);
+    this.state = { countries: [] };
+  }
   state = {
     visibleModal: false,
   };
@@ -24,28 +32,74 @@ class MyModal extends Component {
       {this._renderButton("Close", () => this.setState({ visibleModal: null }))}
     </View>
   );
+  getData() {
+    fetch(Type.DO_MAIN + "user/getCountries?token=" + this.props.profileReducers.token)
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ countries: data.Data });
+        console.log("messages: ", data.Message);
+        console.log("Success: ", data.Success);
+      })
+      .catch((error) => {
+        console.log('error:', error);
+      })
+  }
 
   render() {
     return (
-      <View style={{ margin: 10 }}>
-        <Button
-          full
-          rounded
-          primary
-          style={{ marginTop: 10 }}
-          onPress={() => this.setModalVisible(1)}
-        >
-          <Text style={{ color: 'white' }}>Show Modal</Text>
-          <Icon name="aperture" />
-        </Button>
-        <Modal isVisible={this.state.visibleModal === 1}>
-          {this._renderModalContent()}
-        </Modal>
+      <View>
+        <View style={{ margin: 10 }}>
+          <Button
+            full
+            rounded
+            primary
+            style={{ marginTop: 10 }}
+            onPress={() => this.setModalVisible(1)}
+          >
+            <Text style={{ color: 'white' }}>Show Modal</Text>
+            <Icon name="aperture" />
+          </Button>
+          <Modal isVisible={this.state.visibleModal === 1}>
+            {this._renderModalContent()}
+          </Modal>
+          <Button
+            full
+            rounded
+            primary
+            style={{ marginTop: 10 }}
+            onPress={this.getData}
+          >
+            <Text style={{ color: 'white' }}>Get DATA</Text>
+            <Icon name="aperture" />
+          </Button>
+
+        </View>
+        <List
+          dataArray={this.state.countries}
+          renderRow={data => {
+            return (
+              <ListItem>
+                <Text>{data.Name}</Text>
+              </ListItem>
+            );
+          }}
+        />
       </View>
     );
   }
 }
-export default MyModal;
+
+function mapStateToProps(state) {
+  return {
+    profileReducers: state.profileReducers
+  };
+}
+// const matchDispatchToProps = (dispatch) => {
+//   return bindActionCreators({
+//       token,
+//   }, dispatch);
+// }
+export default connect(mapStateToProps)(MyModal);
 
 const styles = StyleSheet.create({
   container: {

@@ -16,7 +16,7 @@ const routes = [
   { name: "Home", icon: "home" },
   { name: "Profile", icon: "person" },
   { name: "Modal", icon: "color-wand" },
-  { name: "People", icon: "people" }
+  { name: "People", icon: "people" },
 ];
 class SideBar extends React.Component {
   render() {

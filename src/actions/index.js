@@ -38,3 +38,9 @@ export const getPerson = (person) => {
     person: person,
   }
 }
+export const token = (token) => {
+  return {
+    type: Type.LOGIN,
+    token: token,
+  }
+}

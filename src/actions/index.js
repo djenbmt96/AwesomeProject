@@ -38,9 +38,9 @@ export const getPerson = (person) => {
     person: person,
   }
 }
-export const token = (token) => {
+export const saveData = (data) => {
   return {
     type: Type.LOGIN,
-    token: token,
+    data: data,
   }
 }

@@ -33,7 +33,7 @@ class MyModal extends Component {
     </View>
   );
   getData() {
-    fetch(Type.DO_MAIN + "user/getCountries?token=" + this.props.profileReducers.token)
+    fetch(Type.DO_MAIN + "user/getCountries?token=" + this.props.profileReducers.data.access_token)
       .then(response => response.json())
       .then(data => {
         this.setState({ countries: data.Data });
@@ -69,7 +69,7 @@ class MyModal extends Component {
             style={{ marginTop: 10 }}
             onPress={this.getData}
           >
-            <Text style={{ color: 'white' }}>Get DATA</Text>
+            <Text style={{ color: 'white' }}>Get All Countries</Text>
             <Icon name="aperture" />
           </Button>
 

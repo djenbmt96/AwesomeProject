@@ -177,4 +177,8 @@ export default styles = StyleSheet.create({
         borderRadius: 4,
         borderColor: "rgba(0, 0, 0, 0.1)"
     },
+    InputLogin:{
+        margin:10,
+        marginLeft:10,
+    }
 })

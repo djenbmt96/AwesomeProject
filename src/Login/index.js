@@ -3,17 +3,17 @@ import styles from '../styles/custom.js'
 import { Image, View, TouchableHighlight, TouchableOpacity, StyleSheet, Keyboard } from 'react-native';
 import Type from '../Enum.js'
 import Modal from "react-native-modal";
-import { Container, Header, Content, Form, Item, Input, CardItem, Button, Text, Icon } from 'native-base';
+import { Container, Header, Content, Form, Item, Input, CardItem, Button, Text, Icon, Right } from 'native-base';
 import { StackNavigator } from "react-navigation";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {token} from "../actions/index.js"
+import { saveData } from "../actions/index.js";
 
 class Login extends Component {
     constructor(props) {
         super(props);
-        this.state = { username: '', password: '', visibleModal: 0, error_description: '', token: '' };
-        this.saveIdentityAndRedirect=this.saveIdentityAndRedirect.bind(this);
+        this.state = { username: '', password: '', visibleModal: 0, error_description: '', data: '', isBlockUI:false };
+        this.saveIdentityAndRedirect = this.saveIdentityAndRedirect.bind(this);
     }
     login = this.login.bind(this);
     login() {
@@ -46,12 +46,12 @@ class Login extends Component {
                     this.setState({
                         visibleModal: 2,
                         error_description: "You already logged in. Do want to login again?",
-                        token: data.access_token
+                        data: data
                     })
                 }
                 else {
                     console.log('success');
-                    this.setState({ token: data.access_token });
+                    this.setState({ data: data });
                     this.saveIdentityAndRedirect();
                 };
             })
@@ -61,8 +61,8 @@ class Login extends Component {
             })
             .done();
     }
-    saveIdentityAndRedirect(){
-        this.props.token(this.state.token);
+    saveIdentityAndRedirect() {
+        this.props.saveData(this.state.data);
         this.props.navigation.navigate("HomeScreen");
         Keyboard.dismiss();
     }
@@ -96,24 +96,33 @@ class Login extends Component {
                         </CardItem>
                     </View>
                     <Form>
-                        <Item>
+                        <Item rounded error={this.state.username == ''} style={styles.InputLogin}>
                             <Input placeholder="Username"
                                 ref={(el => { this.username = el; })}
                                 onChangeText={(username) => { this.setState({ username: username }) }}
                                 value={this.state.username} />
+                            {this.state.username == '' ?
+                                <Right>
+                                    <Text note style={{ color: 'red' }}>Username is required  </Text>
+                                </Right> : null}
                         </Item>
-                        <Item last>
+                        <Item rounded error={this.state.password == ''} style={styles.InputLogin}>
                             <Input placeholder="Password"
                                 secureTextEntry={true}
                                 ref={(el => { this.password = el; })}
                                 onChangeText={(password) => { this.setState({ password: password }) }}
                                 value={this.state.password} />
+                            {this.state.password == '' ?
+                                <Right>
+                                    <Text note style={{ color: 'red' }}>Password is required  </Text>
+                                </Right> : null}
                         </Item>
                     </Form>
                     <Button
                         full
+                        disabled={this.state.username == '' || this.state.password == ''}
                         rounded
-                        success
+                        success={!this.state.username == '' && !this.state.password == ''}
                         style={{ margin: 10 }}
                         onPress={this.login}
                     >
@@ -140,7 +149,7 @@ function mapStateToProps(state) {
 }
 const matchDispatchToProps = (dispatch) => {
     return bindActionCreators({
-        token,
+        saveData,
     }, dispatch);
 }
 export default connect(mapStateToProps, matchDispatchToProps)(Login);

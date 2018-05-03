@@ -92,6 +92,7 @@ class HomeScreen extends React.Component {
     // console.log('id:' + this.state.comment.idUser);
     // console.log('comment:' + this.state.comment.comment);
     // console.log('time:' + this.state.comment.time);
+    console.log('data:', this.props.profileReducers.data);
     return (
       <Container>
         <Header>

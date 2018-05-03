@@ -105,7 +105,7 @@ class Profile extends React.Component {
               />
             </View>
             <View style={styles.coverMetaContainer}>
-              <Text style={styles.coverName}>{profileReducers.name}</Text>
+              <Text style={styles.coverName}>{profileReducers.data.FirstName + ' ' +profileReducers.data.LastName}</Text>
             </View>
             <View style={styles.buttonProfile}>
               <Button
@@ -135,7 +135,7 @@ class Profile extends React.Component {
           <Form>
             <Item stackedLabel>
               <Label>Email</Label>
-              <Text>{profileReducers.email}</Text>
+              <Text>{profileReducers.data.Email}</Text>
             </Item>
             <Item stackedLabel last>
               <Label>Date</Label>

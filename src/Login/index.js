@@ -3,7 +3,7 @@ import styles from '../styles/custom.js'
 import { Image, View, TouchableHighlight, TouchableOpacity, StyleSheet, Keyboard } from 'react-native';
 import Type from '../Enum.js'
 import Modal from "react-native-modal";
-import { Container, Header, Content, Form, Item, Input, CardItem, Button, Text, Icon, Right } from 'native-base';
+import { Container, Header, Content, Form, Item, Input, CardItem, Button, Text, Icon, Right,Spinner } from 'native-base';
 import { StackNavigator } from "react-navigation";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -12,11 +12,12 @@ import { saveData } from "../actions/index.js";
 class Login extends Component {
     constructor(props) {
         super(props);
-        this.state = { username: '', password: '', visibleModal: 0, error_description: '', data: '', isBlockUI:false };
+        this.state = { username: '', password: '', visibleModal: 0, error_description: '', data: ''};
         this.saveIdentityAndRedirect = this.saveIdentityAndRedirect.bind(this);
     }
     login = this.login.bind(this);
     login() {
+        this.setState({visibleModal:3});
         let details = {
             'username': this.state.username,
             'password': this.state.password,
@@ -51,7 +52,7 @@ class Login extends Component {
                 }
                 else {
                     console.log('success');
-                    this.setState({ data: data });
+                    this.setState({ data: data,visibleModal:null });
                     this.saveIdentityAndRedirect();
                 };
             })
@@ -134,6 +135,9 @@ class Login extends Component {
                     </Modal>
                     <Modal isVisible={this.state.visibleModal === 2}>
                         {this._renderModalContent(this.state.error_description)}
+                    </Modal>
+                    <Modal isVisible={this.state.visibleModal === 3} transparent={true}>
+                        <Spinner color='green' />
                     </Modal>
                 </Content>
             </Container>
